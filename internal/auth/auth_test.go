@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestGetAPIKey (t *testing.T) {
+func TestGetAPIKey(t *testing.T) {
 	header1 := http.Header{}
 	header1.Set("Authorization", "ApiKey heylois")
 	header2 := http.Header{}
@@ -15,34 +15,34 @@ func TestGetAPIKey (t *testing.T) {
 	header4 := http.Header{}
 	header4.Set("Content-Type", "application/json")
 
-	testCases := []struct{
-		name string
-		header http.Header
-		result string
+	testCases := []struct {
+		name         string
+		header       http.Header
+		result       string
 		errorPresent bool
 	}{
 		{
-			name: "Test pass",
-			header: header1,
-			result: "heylois",
+			name:         "Test pass",
+			header:       header1,
+			result:       "heylois",
 			errorPresent: false,
 		},
 		{
-			name: "Length of header less than 2",
-			header: header2,
-			result: "",
+			name:         "Length of header less than 2",
+			header:       header2,
+			result:       "",
 			errorPresent: true,
 		},
 		{
-			name: "Wrong spelling in header",
-			header: header3,
-			result: "",
+			name:         "Wrong spelling in header",
+			header:       header3,
+			result:       "",
 			errorPresent: true,
 		},
 		{
-			name: "Authorization header not present",
-			header: header4,
-			result: "",
+			name:         "Authorization header not present",
+			header:       header4,
+			result:       "",
 			errorPresent: true,
 		},
 	}
