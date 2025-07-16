@@ -11,6 +11,9 @@ jobs:
     timeout-minutes: 30
 
     steps:
+      - env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
       - name: Check out code
         uses: actions/checkout@v4
 
@@ -18,6 +21,9 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "1.23.0"
+
+      - name: Installing goose
+        run: go install github.com/pressly/goose/v3/cmd/goose@latest
 
       - name: Building the app
         run: ./scripts/buildprod.sh
@@ -35,6 +41,12 @@ jobs:
 
       - name: Pushing image GCP
         run: gcloud builds submit --tag us-central1-docker.pkg.dev/notely-466019/notely-ar-repo/notely:latest .
+
+      - name: Running database migrations
+        run: ./scripts/migrateup.sh
+
+      - name: Last mile checks
+        run: git diff
 
       - name: Deploy to Cloud Run
         run: gcloud run deploy notely --image us-central1-docker.pkg.dev/notely-466019/notely-ar-repo/notely:latest --region us-central1 --allow-unauthenticated --project notely-466019 --max-instances=4
